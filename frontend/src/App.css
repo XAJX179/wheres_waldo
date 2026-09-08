@@ -167,7 +167,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
@@ -181,4 +181,16 @@
     right: 0;
     border-right-color: var(--border);
   }
+}
+
+.map-container {
+  overflow: scroll;
+  max-height: 75vh;
+}
+
+.target-box {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
