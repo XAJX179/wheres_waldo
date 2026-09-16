@@ -17,7 +17,7 @@ function Game() {
         </dialog>
         <img
           onClick={handleImageClick}
-          src="../../public/wheres_waldo_department-store.webp"
+          src="/wheres_waldo_department-store.webp"
           alt="where's waldo game map"
         />
       </div>
@@ -25,13 +25,27 @@ function Game() {
   );
 
   function handleImageClick(e) {
+    let mapContainer = e.target.parentElement;
+    let containerHeight = mapContainer.clientHeight;
+    let containerWidth = mapContainer.clientWidth;
+    targetBox.current.showModal(); // need this call before getting the height and width
+    let dialogHeight = targetBox.current.clientHeight;
+    let dialogWidth = targetBox.current.clientWidth;
+    let maxX = containerWidth - dialogWidth;
+    let maxY = containerHeight - dialogHeight;
+    if (e.clientX > maxX) {
+      targetBox.current.style.left = `${maxX}px`;
+    } else {
+      targetBox.current.style.left = `${e.clientX}px`;
+    }
+    if (e.clientY > maxY) {
+      targetBox.current.style.top = `${maxY}px`;
+    } else {
+      targetBox.current.style.top = `${e.clientY}px`;
+    }
     let coords = getCoordinates(e);
-    console.log(coords);
     let json = JSON.stringify(coords);
     console.log(json);
-    targetBox.current.showModal();
-    targetBox.current.style.left = `${e.clientX}px`;
-    targetBox.current.style.top = `${e.clientY}px`;
   }
 
   function handleDialogClick(e) {
