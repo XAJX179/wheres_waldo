@@ -1,8 +1,39 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Game() {
   const targetBox = useRef(null);
+  const [characters, setCharacters] = useState(null);
+  const [coords, setCoords] = useState(null);
 
+  useEffect(() => {
+    fetch("http://localhost:3000/characters/index", {
+      headers: {
+        accept: "application/json",
+        "upgrade-insecure-requests": "1",
+      },
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+    }).then((res) => {
+      res.json().then((result) => {
+        console.log(result);
+        setCharacters(result);
+      });
+    });
+  }, []);
+
+  let x, y;
+  if (coords) {
+    x = JSON.parse(coords).x;
+    y = JSON.parse(coords).y;
+  }
+
+  let characterList;
+  if (characters) {
+    characterList = characters.map((e) => (
+      <li key={e.serial_no}> {e.name} </li>
+    ));
+  }
   return (
     <main>
       <div className="map-container">
@@ -12,7 +43,7 @@ function Game() {
           onClick={handleDialogClick}
         >
           <div className="target-content">
-            <p>hello</p>
+            {x} {y} {characterList}
           </div>
         </dialog>
         <img
@@ -31,8 +62,8 @@ function Game() {
     targetBox.current.showModal(); // need this call before getting the height and width
     let dialogHeight = targetBox.current.clientHeight;
     let dialogWidth = targetBox.current.clientWidth;
-    let maxX = containerWidth - dialogWidth;
-    let maxY = containerHeight - dialogHeight;
+    let maxX = containerWidth + mapContainer.offsetLeft - dialogWidth;
+    let maxY = containerHeight + mapContainer.offsetTop - dialogHeight;
     if (e.clientX > maxX) {
       targetBox.current.style.left = `${maxX}px`;
     } else {
@@ -45,7 +76,7 @@ function Game() {
     }
     let coords = getCoordinates(e);
     let json = JSON.stringify(coords);
-    console.log(json);
+    setCoords(json);
   }
 
   function handleDialogClick(e) {
@@ -60,7 +91,7 @@ function Game() {
     let rect = e.target.getBoundingClientRect();
     let x = e.pageX - rect.x;
     let y = e.pageY - rect.y;
-    return { x: x, y: y };
+    return { x: x.toFixed(2), y: y.toFixed(2) };
   }
 }
 

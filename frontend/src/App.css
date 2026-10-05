@@ -191,6 +191,6 @@
 .target-box {
   position: absolute;
   margin: 0;
-  padding: 0;
+  padding: 5px;
   border: 0;
 }
