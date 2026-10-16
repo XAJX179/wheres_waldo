@@ -4,9 +4,17 @@ function Game() {
   const targetBox = useRef(null);
   const [characters, setCharacters] = useState(null);
   const [coords, setCoords] = useState(null);
+  const [csrf, setCsrf] = useState(null);
+
+  let x, y;
+
+  if (coords) {
+    x = JSON.parse(coords).x;
+    y = JSON.parse(coords).y;
+  }
 
   useEffect(() => {
-    fetch("http://localhost:3000/characters/index", {
+    fetch("http://localhost:3000/characters", {
       headers: {
         accept: "application/json",
         "upgrade-insecure-requests": "1",
@@ -16,22 +24,20 @@ function Game() {
       credentials: "include",
     }).then((res) => {
       res.json().then((result) => {
-        console.log(result);
         setCharacters(result);
+        setCsrf(res.headers.get("x-csrf-token"));
       });
     });
   }, []);
 
-  let x, y;
-  if (coords) {
-    x = JSON.parse(coords).x;
-    y = JSON.parse(coords).y;
-  }
-
   let characterList;
   if (characters) {
     characterList = characters.map((e) => (
-      <li key={e.serial_no}> {e.name} </li>
+      <li key={e.serial_no}>
+        <button onClick={() => handleCharacterClick(e.serial_no)}>
+          {e.name}
+        </button>
+      </li>
     ));
   }
   return (
@@ -43,7 +49,7 @@ function Game() {
           onClick={handleDialogClick}
         >
           <div className="target-content">
-            {x} {y} {characterList}
+            <ul>{characterList}</ul>
           </div>
         </dialog>
         <img
@@ -92,6 +98,33 @@ function Game() {
     let x = e.pageX - rect.x;
     let y = e.pageY - rect.y;
     return { x: x.toFixed(2), y: y.toFixed(2) };
+  }
+
+  function handleCharacterClick(serial_no) {
+    //  TODO: ask the server if this serial_no character is located where the current coords is clicked
+    fetch("http://localhost:3000/characters/" + serial_no, {
+      headers: {
+        accept: "application/json",
+        "upgrade-insecure-requests": "1",
+        "x-csrf-token": csrf,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify({ x: x, y: y }),
+    }).then((res) => {
+      res.json().then((result) => {
+        console.log(result);
+        setCsrf(res.headers.get("x-csrf-token"));
+      });
+    });
+    //  if yes
+    //    mark it as found
+    //    no longer show in list
+    //  else
+    //    display message that selected character was not found at this coord.
+    console.log(serial_no);
   }
 }
 

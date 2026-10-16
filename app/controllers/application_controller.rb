@@ -12,5 +12,6 @@ class ApplicationController < ActionController::API
 
   def set_csrf_token
     response.headers["x-csrf-token"] = form_authenticity_token
+    response.headers["access-control-expose-headers"] = "x-csrf-token"
   end
 end
