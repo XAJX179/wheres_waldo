@@ -27,6 +27,19 @@ function Game() {
         setCharacters(result);
         setCsrf(res.headers.get("x-csrf-token"));
       });
+
+      fetch("http://localhost:3000/game_sessions", {
+        headers: {
+          accept: "application/json",
+          "upgrade-insecure-requests": "1",
+          "x-csrf-token": res.headers.get("x-csrf-token"),
+        },
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+      }).then((res) => {
+        setCsrf(res.headers.get("x-csrf-token"));
+      });
     });
   }, []);
 

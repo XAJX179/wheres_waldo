@@ -10,7 +10,7 @@ class GameSessionsController < ApplicationController
         head :unprocessable_entity
       end
     else
-      head :conflict
+      head :no_content
     end
   end
 end
