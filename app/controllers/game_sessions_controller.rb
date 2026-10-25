@@ -7,7 +7,7 @@ class GameSessionsController < ApplicationController
         session[:game_session_id] = @current_game_session.id
         head :ok
       else
-        head :unprocessable_entity
+        head :unprocessable_content
       end
     else
       head :no_content

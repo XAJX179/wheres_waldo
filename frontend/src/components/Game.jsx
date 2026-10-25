@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 function Game() {
   const targetBox = useRef(null);
+  const image = useRef(null);
   const [characters, setCharacters] = useState(null);
   const [coords, setCoords] = useState(null);
   const [csrf, setCsrf] = useState(null);
 
+  let navigate = useNavigate();
   let x, y;
 
   if (coords) {
@@ -43,6 +46,21 @@ function Game() {
     });
   }, []);
 
+  if (characters && characters.length == 0) {
+    return (
+      <main>
+        <p>Game Finished!</p>
+        <form onSubmit={handleLeaderboardForm}>
+          <div>
+            <label htmlFor="name">Submit name for leaderboard: </label>
+            <input type="text" name="name" id="name" required />
+          </div>
+          <input type="submit" />
+        </form>
+        <Link to="/">New Game</Link>
+      </main>
+    );
+  }
   let characterList;
   if (characters) {
     characterList = characters.map((e) => (
@@ -65,17 +83,26 @@ function Game() {
             <ul>{characterList}</ul>
           </div>
         </dialog>
-        <img
-          onClick={handleImageClick}
-          src="/wheres_waldo_department-store.webp"
-          alt="where's waldo game map"
-        />
+        <div className="img-preview">
+          <img
+            ref={image}
+            onClick={handleImageClick}
+            src="/wheres_waldo_department-store.webp"
+            alt="where's waldo game map"
+          />
+          {/* <p className="mark" style={{ top: "100px", left: "100px" }}> */}
+          {/*   📍 */}
+          {/* </p> */}
+          {/* <p className="mark" style={{ top: "100px" }}> */}
+          {/*   📍 */}
+          {/* </p> */}
+        </div>
       </div>
     </main>
   );
 
   function handleImageClick(e) {
-    let mapContainer = e.target.parentElement;
+    let mapContainer = e.target.parentElement.parentElement;
     let containerHeight = mapContainer.clientHeight;
     let containerWidth = mapContainer.clientWidth;
     targetBox.current.showModal(); // need this call before getting the height and width
@@ -127,17 +154,54 @@ function Game() {
       credentials: "include",
       body: JSON.stringify({ x: x, y: y }),
     }).then((res) => {
-      res.json().then((result) => {
-        console.log(result);
-        setCsrf(res.headers.get("x-csrf-token"));
-      });
+      console.log(res);
+      if (res.status === 204) {
+        // error message
+        //    display message that selected character was not found at this coord.
+      } else if (res.status === 205) {
+        // game end
+        setCharacters([]);
+      } else if (res.status === 200) {
+        res.json().then((result) => {
+          console.log(result);
+          //    mark it as found
+          let mark = document.createElement("p");
+          mark.classList.add("mark");
+          mark.style.top = y + "px";
+          mark.textContent = "📍";
+          mark.style.left = x - 10 + "px";
+          image.current.after(mark);
+          targetBox.current.close();
+          //    no longer show in list
+          let remaining_characters = characters.filter(
+            (e) => e.serial_no !== result.serial_no,
+          );
+          setCharacters(remaining_characters);
+          setCsrf(res.headers.get("x-csrf-token"));
+        });
+      }
     });
-    //  if yes
-    //    mark it as found
-    //    no longer show in list
-    //  else
-    //    display message that selected character was not found at this coord.
     console.log(serial_no);
+  }
+
+  function handleLeaderboardForm(e) {
+    e.preventDefault();
+
+    fetch("http://localhost:3000/leaderboards", {
+      headers: {
+        accept: "application/json",
+        "upgrade-insecure-requests": "1",
+        "x-csrf-token": csrf,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify({ name: e.target.name.value }),
+    }).then((res) => {
+      setCsrf(res.headers.get("x-csrf-token"));
+      navigate("/leaderboard");
+    });
   }
 }
 

@@ -3,7 +3,8 @@ class CharactersController < ApplicationController
   IMG_WIDTH = 2048
 
   def index
-    @characters = Character.select(:serial_no, :name, :x, :y, :x_expand, :y_expand).as_json(except: :id)
+    reset_session
+    @characters = Character.select(:serial_no, :name).as_json(except: :id)
     render json: @characters
   end
 
@@ -29,6 +30,13 @@ class CharactersController < ApplicationController
         else
           current_game_session.characters_found += serial_no
           current_game_session.save
+
+          if current_game_session.characters_found.length == 5
+            current_game_session.ended_at = current_game_session.updated_at
+            current_game_session.save
+            head :reset_content
+            return
+          end
           render json: @character
         end
       else

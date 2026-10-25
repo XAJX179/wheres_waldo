@@ -1,5 +1,6 @@
 import App from "./App";
 import Game from "./components/Game";
+import Leaderboard from "./components/Leaderboard";
 import ErrorPage from "./ErrorPage";
 
 const routes = [
@@ -11,6 +12,11 @@ const routes = [
   {
     path: "game",
     element: <Game />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "leaderboard",
+    element: <Leaderboard />,
     errorElement: <ErrorPage />,
   },
 ];
