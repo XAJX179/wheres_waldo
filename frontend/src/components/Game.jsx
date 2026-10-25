@@ -87,7 +87,7 @@ function Game() {
           <img
             ref={image}
             onClick={handleImageClick}
-            src="/wheres_waldo_department-store.webp"
+            src="/wheres_waldo/wheres_waldo_department-store.webp"
             alt="where's waldo game map"
           />
           {/* <p className="mark" style={{ top: "100px", left: "100px" }}> */}
