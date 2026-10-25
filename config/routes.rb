@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  resources :game_sessions, only: [ :create ]
-  resources :characters, only: [ :index, :update ]
-  resources :leaderboards, only: [ :index, :create ]
+  scope "/wheres_waldo" do
+    resources :game_sessions, only: [ :create ]
+    resources :characters, only: [ :index, :update ]
+    resources :leaderboards, only: [ :index, :create ]
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
