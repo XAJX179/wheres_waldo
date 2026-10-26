@@ -5,7 +5,7 @@ function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState(null);
 
   useEffect(() => {
-    fetch("http://xajx.alwaysdata.net/wheres_waldo/leaderboards", {
+    fetch("https://xajx.alwaysdata.net/wheres_waldo/leaderboards", {
       headers: {
         accept: "application/json",
         "upgrade-insecure-requests": "1",

@@ -31,7 +31,7 @@ function Game() {
         setCsrf(res.headers.get("x-csrf-token"));
       });
 
-      fetch("http://xajx.alwaysdata.net/wheres_waldo/game_sessions", {
+      fetch("https://xajx.alwaysdata.net/wheres_waldo/game_sessions", {
         headers: {
           accept: "application/json",
           "upgrade-insecure-requests": "1",
@@ -142,7 +142,7 @@ function Game() {
 
   function handleCharacterClick(serial_no) {
     //  TODO: ask the server if this serial_no character is located where the current coords is clicked
-    fetch("http://xajx.alwaysdata.net/wheres_waldo/characters/" + serial_no, {
+    fetch("https://xajx.alwaysdata.net/wheres_waldo/characters/" + serial_no, {
       headers: {
         accept: "application/json",
         "upgrade-insecure-requests": "1",
@@ -187,7 +187,7 @@ function Game() {
   function handleLeaderboardForm(e) {
     e.preventDefault();
 
-    fetch("http://xajx.alwaysdata.net/wheres_waldo/leaderboards", {
+    fetch("https://xajx.alwaysdata.net/wheres_waldo/leaderboards", {
       headers: {
         accept: "application/json",
         "upgrade-insecure-requests": "1",
