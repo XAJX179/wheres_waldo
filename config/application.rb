@@ -42,10 +42,14 @@ module WheresWaldo
     config.api_only = true
 
     # This also configures session_options for use below
-    config.session_store :cookie_store, key: "_wheres_waldo_xajx_session",
-      domain: "xajx.alwaysdata.net",
-      same_site: :none,
-      secure: true
+    if Rails.env.development?
+      config.session_store :cookie_store, key: "_wheres_waldo_xajx_session"
+    else
+      config.session_store :cookie_store, key: "_wheres_waldo_xajx_session",
+        domain: "xajx.alwaysdata.net",
+        same_site: :none,
+        secure: true
+    end
 
     # Required for all session management (regardless of session_store)
     config.middleware.use ActionDispatch::Cookies
