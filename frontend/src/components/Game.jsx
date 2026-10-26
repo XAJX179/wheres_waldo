@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import CharacterCards from "./CharacterCards";
 
 function Game() {
   const targetBox = useRef(null);
@@ -81,6 +82,9 @@ function Game() {
         >
           <div className="target-content">
             <ul>{characterList}</ul>
+            <p>
+              <i>images given below for reference</i>
+            </p>
           </div>
         </dialog>
         <div className="img-preview">
@@ -90,14 +94,10 @@ function Game() {
             src="/wheres_waldo/wheres_waldo_department-store.webp"
             alt="where's waldo game map"
           />
-          {/* <p className="mark" style={{ top: "100px", left: "100px" }}> */}
-          {/*   📍 */}
-          {/* </p> */}
-          {/* <p className="mark" style={{ top: "100px" }}> */}
-          {/*   📍 */}
-          {/* </p> */}
         </div>
       </div>
+      <p>hint for woof: look for his tail near table of hats.</p>
+      {characters && <CharacterCards characters={characters} />}
     </main>
   );
 

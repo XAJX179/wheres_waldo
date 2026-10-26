@@ -206,3 +206,25 @@
   border: 2px green dotted;
   background-color: rgba(0, 255, 0, 0.5);
 }
+
+li {
+  list-style: none;
+}
+
+li button {
+  font-size: 1rem;
+  margin: 1px;
+  color: black;
+  background-color: white;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cards img {
+  width: 15vw;
+  height: auto;
+}
