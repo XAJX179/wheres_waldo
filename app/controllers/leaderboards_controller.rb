@@ -5,7 +5,7 @@ class LeaderboardsController < ApplicationController
       {
         id: i.id,
         name: i.name,
-        time: i.game_session.ended_at - i.game_session.started_at
+        time: (i.game_session.ended_at - i.game_session.started_at).truncate(2).to_s + " seconds"
       }
     end
     render json: result
