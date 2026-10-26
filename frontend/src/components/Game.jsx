@@ -154,7 +154,7 @@ function Game() {
       credentials: "include",
       body: JSON.stringify({ x: x, y: y }),
     }).then((res) => {
-      console.log(res);
+      // console.log(res);
       if (res.status === 204) {
         // error message
         //    display message that selected character was not found at this coord.
@@ -163,7 +163,7 @@ function Game() {
         setCharacters([]);
       } else if (res.status === 200) {
         res.json().then((result) => {
-          console.log(result);
+          // console.log(result);
           //    mark it as found
           let mark = document.createElement("p");
           mark.classList.add("mark");
@@ -181,7 +181,7 @@ function Game() {
         });
       }
     });
-    console.log(serial_no);
+    // console.log(serial_no);
   }
 
   function handleLeaderboardForm(e) {
