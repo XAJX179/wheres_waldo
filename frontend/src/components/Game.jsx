@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import CharacterCards from "./CharacterCards";
+import Spinner from "./Spinner";
 
 function Game() {
   const targetBox = useRef(null);
@@ -8,6 +9,7 @@ function Game() {
   const [characters, setCharacters] = useState(null);
   const [coords, setCoords] = useState(null);
   const [csrf, setCsrf] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   let navigate = useNavigate();
   let x, y;
@@ -26,25 +28,31 @@ function Game() {
       method: "GET",
       mode: "cors",
       credentials: "include",
-    }).then((res) => {
-      res.json().then((result) => {
-        setCharacters(result);
-        setCsrf(res.headers.get("x-csrf-token"));
-      });
+    })
+      .then((res) => {
+        res.json().then((result) => {
+          setCharacters(result);
+          setIsLoading(false);
+          setCsrf(res.headers.get("x-csrf-token"));
+        });
 
-      fetch("https://xajx.alwaysdata.net/wheres_waldo/game_sessions", {
-        headers: {
-          accept: "application/json",
-          "upgrade-insecure-requests": "1",
-          "x-csrf-token": res.headers.get("x-csrf-token"),
-        },
-        method: "POST",
-        mode: "cors",
-        credentials: "include",
-      }).then((res) => {
-        setCsrf(res.headers.get("x-csrf-token"));
+        fetch("https://xajx.alwaysdata.net/wheres_waldo/game_sessions", {
+          headers: {
+            accept: "application/json",
+            "upgrade-insecure-requests": "1",
+            "x-csrf-token": res.headers.get("x-csrf-token"),
+          },
+          method: "POST",
+          mode: "cors",
+          credentials: "include",
+        }).then((res) => {
+          setCsrf(res.headers.get("x-csrf-token"));
+        });
+      })
+      .catch(() => {
+        window.location.pathname = "/wheres_waldo";
+        alert("Could not fetch data, try again in a minute");
       });
-    });
   }, []);
 
   if (characters && characters.length == 0) {
@@ -81,6 +89,8 @@ function Game() {
           onClick={handleDialogClick}
         >
           <div className="target-content">
+            {isLoading && <Spinner />}
+
             <ul>{characterList}</ul>
             <p>
               <i>images given below for reference</i>
